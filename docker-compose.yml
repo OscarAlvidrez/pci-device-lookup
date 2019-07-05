@@ -1,0 +1,28 @@
+  rating-db:
+    image: postgres:10.9
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - USER_DB=demo
+      - USER_PASSWORD=demo
+      - USER_NAME=demo
+
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+
+  dbloader:
+    build: .
+    environment:
+      - USER_DB=demo
+      - USER_PASSWORD=demo
+      - USER_NAME=demo
+      - DB_HOST=rating-db
+    links:
+      - rating-db
+
+    # Uncomment the volume mount so you don't have to build each time you
+    # change source.
+    volumes:
+      - ./loader:/usr/src/app
+
